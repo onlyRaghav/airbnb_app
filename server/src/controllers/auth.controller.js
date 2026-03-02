@@ -40,15 +40,69 @@ export const register = async (req, res) => {
         )
         res.status(201).json({
             token,
-            user:{
-                id:user._id,
-                name:user.name,
-                email:user.email
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email
             }
         });
 
-    } catch (err) { 
-        console.error("Register error:",err);
+    } catch (err) {
+        console.error("Register error:", err);
+        res.status(500).json({
+            message: "Server error!"
+        })
+    }
+}
+
+export const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // 1.Basic Validation
+        if (!email || !password) {
+            res.status(400).json({
+                message: "Email and password required"
+            })
+        }
+        // 2.find user and explicitly select password
+        const user = await User.findOne({ email }).select("+password");
+
+        if (!user) {
+            res.status(401).json({
+                message: "Invalid Credentials"
+            })
+        }
+        // 3.Compare password with the hash
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            res.status(401).json({
+                message: "Invalid Credentials"
+            });
+        }
+
+        // 4.generate token
+        const token = jwt.sign(
+            {
+                id: user._id,
+                name: user.name,
+                email: user.email
+            },
+            process.env.JWT_SECRET_KEY,
+            {
+                expiresIn: '1d'
+            }
+        );
+        res.status(201).json({
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email
+            }
+        });
+    }catch(error){
+        console.error("Login Error:",error)
         res.status(500).json({
             message:"Server error!"
         })
