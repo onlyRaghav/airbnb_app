@@ -32,7 +32,7 @@ const Login = () => {
 
     }
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
             <form className="bg-white p-8 rounded shadow-md w-96 flex flex-col justify-around align-center" onSubmit={handleSubmit}>
                 <h2 className=" text-blue-600 text-3xl mb-6 text-center font-bold">Login</h2>
                 {error &&
