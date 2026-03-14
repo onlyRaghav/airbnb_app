@@ -1,22 +1,17 @@
-import {useState, UseEffect, useEffect} from "react"
+import { useState } from "react"
 
-export const useAuth = ()=>{
-    const [token,setToken]=useState(null);
+export const useAuth = () => {
+    const [token, setToken] = useState(() => localStorage.getItem('token'));
 
-    useEffect(()=>{
-        const storedToken= localStorage.getItem("token");
-        if(storedToken) setToken(storedToken);
-    },[])
-
-    const login= (jwt)=>{
-        localStorage.setItem("token",jwt);
+    const login = (jwt) => {
+        localStorage.setItem("token", jwt);
         setToken(jwt);
     }
-    const logout= ()=>{
+    const logout = () => {
         localStorage.removeItem("token");
         setToken(null);
     }
-    return({
+    return ({
         token,
         login,
         logout,
